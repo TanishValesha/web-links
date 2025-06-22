@@ -50,7 +50,7 @@ export const saveLink = async (
     }
     res.status(201).json(link);
   } catch (err: any) {
-    console.error("❌ Prisma createLink error:", err);
+    console.error("Prisma createLink error:", err);
     res
       .status(500)
       .json({ error: "Failed to save link", details: err?.message || err });
@@ -90,7 +90,7 @@ export const prefetchLink = async (
       tags,
     });
   } catch (error) {
-    console.error("❌ Open Graph Scraper error:", error);
+    console.error("Open Graph Scraper error:", error);
     res.status(500).json({ error: "Failed to prefetch link", details: error });
   }
 };
@@ -106,7 +106,7 @@ export const getLinks = async (
     });
     res.status(200).json(links);
   } catch (err) {
-    console.error("❌ Prisma getLinks error:", err);
+    console.error("Prisma getLinks error:", err);
     res.status(500).json({ error: "Failed to retrieve links", details: err });
   }
 };
@@ -127,7 +127,7 @@ export const getLinkById = async (
 
     res.json(link);
   } catch (err) {
-    console.error("❌ Prisma getLinkById error:", err);
+    console.error("Prisma getLinkById error:", err);
     res.status(500).json({ error: "Failed to retrieve link", details: err });
   }
 };
