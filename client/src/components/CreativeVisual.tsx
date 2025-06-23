@@ -8,9 +8,9 @@ import {
 
 const CreativeVisual = () => {
   return (
-    <div className="relative w-full h-96 flex items-center justify-center animate-fade-in">
+    <div className="relative w-full h-10 lg:h-96 flex items-center justify-center animate-fade-in">
       {/* Main circular design */}
-      <div className="relative w-96 h-96">
+      <div className="lg:block hidden relative w-96 h-96">
         {/* Central gradient orb representing the web */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-indigo-500 to-cyan-400 rounded-full blur-sm opacity-80 animate-pulse"></div>
         <div className="absolute inset-2 bg-gradient-to-tr from-cyan-300 via-blue-300 to-indigo-300 rounded-full blur-md opacity-60 animate-pulse delay-500"></div>
@@ -70,8 +70,8 @@ const CreativeVisual = () => {
       </div>
 
       {/* Descriptive text for the app */}
-      <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 text-center">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+      <div className="absolute md:-bottom-20 -bottom-12 left-1/2 transform -translate-x-1/2 text-center">
+        <h2 className="text-2xl font-bold bg-gradient-to-br from-indigo-500 to-purple-500 bg-clip-text text-transparent">
           LinkSaver
         </h2>
         <p className="text-gray-600 text-sm">

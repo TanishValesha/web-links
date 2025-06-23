@@ -15,7 +15,7 @@ const Index = () => {
       </div>
 
       <div className="w-full h-screen grid lg:grid-cols-2 items-center">
-        <div className="hidden lg:block px-8">
+        <div className="block lg:px-8 px-0">
           <CreativeVisual />
         </div>
         {isLogin && (

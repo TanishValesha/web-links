@@ -11,7 +11,12 @@ dotenv.config();
 
 const app = express();
 app.use(morgan("tiny"));
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 const port = process.env.PORT || 3000;
