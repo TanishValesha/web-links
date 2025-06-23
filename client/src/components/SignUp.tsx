@@ -11,6 +11,7 @@ import {
 } from "./ui/card";
 import { EyeIcon, EyeOffIcon, LinkIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const SignUp = ({ setIsLogin }: { setIsLogin: (isLogin: boolean) => void }) => {
   const [email, setEmail] = useState("");
@@ -20,16 +21,48 @@ const SignUp = ({ setIsLogin }: { setIsLogin: (isLogin: boolean) => void }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    if (!email || !password) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Invalid email format");
+    }
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+    }
 
-    // Simulate login process
-    setTimeout(() => {
-      setIsLoading(false);
-      // toast({
-      //   title: "Welcome back! 🎉",
-      //   description: "Ready to organize your links!",
-      // });
-    }, 2000);
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/register`,
+        {
+          method: "POST",
+          credentials: "include",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+
+      if (response.ok) {
+        toast.success("Sign up successful!");
+      } else {
+        toast.error("Sign up failed. Please try again.");
+      }
+
+      setEmail("");
+      setPassword("");
+      setShowPassword(false);
+      setIsLogin(true);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -45,7 +78,8 @@ const SignUp = ({ setIsLogin }: { setIsLogin: (isLogin: boolean) => void }) => {
               <LinkIcon className="w-8 h-8 text-white" />
             </div>
             <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-              Welcome to LinkSaver
+              Welcome to LinkSaver <br />
+              Register Now
             </CardTitle>
             <CardDescription className="text-gray-600 text-lg">
               Sign up to manage your link collection
