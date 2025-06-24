@@ -57,12 +57,13 @@ const AddLinkModal = ({ isOpen, onClose, onLinkAdded }: AddLinkModalProps) => {
       );
 
       if (!response.ok) {
+        if (response.status === 500) {
+          toast.error("Failed to fetch link metadata. Please check the URL.");
+          navigate("/dashboard");
+          return;
+        }
         toast.error("Failed to fetch link metadata. Please check the URL.");
-      }
-
-      if (response.status === 500) {
-        toast.error("Failed to fetch link metadata. Please check the URL.");
-        navigate("/dashboard");
+        return;
       }
 
       const data: LinkMetadata = await response.json();
