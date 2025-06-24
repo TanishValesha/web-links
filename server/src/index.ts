@@ -10,6 +10,7 @@ import { protect } from "./middleware/authMiddleware";
 dotenv.config();
 
 const app = express();
+
 app.use(morgan("tiny"));
 app.use(
   cors({
@@ -17,6 +18,8 @@ app.use(
     credentials: true,
   })
 );
+app.options("*", cors());
+
 app.use(express.json());
 app.use(cookieParser());
 const port = process.env.PORT || 3000;
