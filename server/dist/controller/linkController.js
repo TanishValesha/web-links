@@ -92,7 +92,6 @@ const prefetchLink = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
     }
     catch (error) {
-        console.error("Open Graph Scraper error:", error);
         res.status(500).json({ error: "Failed to prefetch link", details: error });
     }
 });

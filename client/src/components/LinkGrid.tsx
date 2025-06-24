@@ -148,24 +148,40 @@ const LinkGrid = ({ triggerReload }: { triggerReload: number }) => {
               )}
 
               {/* Action buttons overlay */}
-              <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex space-x-2">
+              {!isMobile && (
+                <div className="absolute top-3 right-3 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex space-x-2">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => openLink(link.id)}
+                    className="bg-white/90 hover:bg-white text-gray-700 shadow-sm"
+                  >
+                    <ExternalLinkIcon className="w-3 h-3" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => deleteLink(link.id)}
+                    className="bg-white/90 hover:bg-red-50 text-red-600 shadow-sm"
+                  >
+                    <TrashIcon className="w-3 h-3" />
+                  </Button>
+                </div>
+              )}
+
+              {isMobile && (
                 <Button
                   size="sm"
                   variant="secondary"
-                  onClick={() => openLink(link.id)}
-                  className="bg-white/90 hover:bg-white text-gray-700 shadow-sm"
-                >
-                  <ExternalLinkIcon className="w-3 h-3" />
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => deleteLink(link.id)}
-                  className="bg-white/90 hover:bg-red-50 text-red-600 shadow-sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteLink(link.id);
+                  }}
+                  className="absolute top-3 right-3 bg-white/90 z-30 hover:bg-red-50 text-red-600 shadow-sm"
                 >
                   <TrashIcon className="w-3 h-3" />
                 </Button>
-              </div>
+              )}
             </div>
 
             {/* Content Section */}

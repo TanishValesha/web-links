@@ -94,7 +94,6 @@ export const prefetchLink = async (
       userId: req.userId!,
     });
   } catch (error) {
-    console.error("Open Graph Scraper error:", error);
     res.status(500).json({ error: "Failed to prefetch link", details: error });
   }
 };
