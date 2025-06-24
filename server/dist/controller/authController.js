@@ -20,13 +20,16 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const prisma = new client_1.PrismaClient();
 const checkStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.cookies.token;
-    if (!token)
+    if (!token) {
         res.status(401).json({ authenticated: false });
+        return;
+    }
     try {
         if (!process.env.JWT_SECRET) {
             res
                 .status(500)
                 .json({ authenticated: false, error: "JWT secret not configured" });
+            return;
         }
         const user = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         res.json({ authenticated: true, user });
@@ -38,21 +41,27 @@ const checkStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.checkStatus = checkStatus;
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
-    if (!email || !password)
+    if (!email || !password) {
         res.status(400).json({ error: "Missing fields" });
+        return;
+    }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         res.status(400).json({ error: "Invalid email format" });
+        return;
     }
     if (password.length < 8) {
         res
             .status(400)
             .json({ error: "Password must be at least 8 characters long" });
+        return;
     }
-    const userExists = yield prisma.user.findUnique({ where: { email } });
-    if (userExists)
-        res.status(400).json({ error: "User already exists" });
-    if (!userExists) {
+    try {
+        const userExists = yield prisma.user.findUnique({ where: { email } });
+        if (userExists) {
+            res.status(400).json({ error: "User already exists" });
+            return;
+        }
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         const user = yield prisma.user.create({
             data: { email, password: hashedPassword },
@@ -68,39 +77,55 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             message: "User registered successfully",
         });
     }
+    catch (error) {
+        console.error("Registration error:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 });
 exports.registerUser = registerUser;
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
-    if (!email || !password)
+    if (!email || !password) {
         res.status(400).json({ error: "Missing fields" });
+        return;
+    }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         res.status(400).json({ error: "Invalid email format" });
+        return;
     }
     if (password.length < 8) {
         res
             .status(400)
             .json({ error: "Password must be at least 8 characters long" });
-    }
-    const user = yield prisma.user.findUnique({ where: { email } });
-    if (!user) {
-        res.status(400).json({ error: "Invalid credentials" });
         return;
     }
-    const isMatch = yield bcrypt_1.default.compare(password, user.password);
-    if (!isMatch)
-        res.status(400).json({ error: "Invalid credentials" });
-    const token = (0, generateJWT_1.generateJWT)(user.id);
-    res.cookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "none",
-        maxAge: 24 * 60 * 60 * 1000,
-    });
-    res.status(200).json({
-        message: "Login successful",
-    });
+    try {
+        const user = yield prisma.user.findUnique({ where: { email } });
+        if (!user) {
+            res.status(400).json({ error: "Invalid credentials" });
+            return;
+        }
+        const isMatch = yield bcrypt_1.default.compare(password, user.password);
+        if (!isMatch) {
+            res.status(400).json({ error: "Invalid credentials" });
+            return;
+        }
+        const token = (0, generateJWT_1.generateJWT)(user.id);
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "none",
+            maxAge: 24 * 60 * 60 * 1000,
+        });
+        res.status(200).json({
+            message: "Login successful",
+        });
+    }
+    catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 });
 exports.loginUser = loginUser;
 const logoutUser = (req, res) => {

@@ -1,4 +1,3 @@
-// src/controller/linkController.ts
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import ogs from "open-graph-scraper";
@@ -14,8 +13,11 @@ export const saveLink = async (
   res: Response
 ): Promise<void> => {
   const { url, title, image, domain, tags, summary } = req.body;
-  if (!url || !title || !image || !domain || !tags || !summary)
+  if (!url || !title || !image || !domain || !tags || !summary) {
     res.status(400).json({ error: "All fields are required" });
+    return;
+  }
+
   if (!req.userId) {
     res.status(401).json({ error: "Unauthorized" });
     return;
@@ -25,22 +27,25 @@ export const saveLink = async (
     const isExisting = await prisma.link.findFirst({
       where: { url: url },
     });
-    if (isExisting)
+
+    if (isExisting) {
       res.status(409).json({ message: "Link already saved/exists" });
-    if (!isExisting) {
-      const link = await prisma.link.create({
-        data: {
-          url,
-          title,
-          image,
-          domain,
-          tags,
-          summary,
-          userId: req.userId!,
-        },
-      });
-      if (link) res.status(201).json(link);
+      return;
     }
+
+    const link = await prisma.link.create({
+      data: {
+        url,
+        title,
+        image,
+        domain,
+        tags,
+        summary,
+        userId: req.userId!,
+      },
+    });
+
+    res.status(201).json(link);
   } catch (err: any) {
     console.error("Prisma createLink error:", err);
     res
@@ -122,7 +127,10 @@ export const getLinkById = async (
       },
     });
 
-    if (!link) res.status(404).json({ error: "Link not found" });
+    if (!link) {
+      res.status(404).json({ error: "Link not found" });
+      return;
+    }
 
     res.json(link);
   } catch (err) {
@@ -140,7 +148,8 @@ export const deleteLink = async (
       where: { id: req.params.id },
     });
     res.status(204).json({ message: "Link deleted successfully" });
-  } catch {
+  } catch (error) {
+    console.error("Delete link error:", error);
     res.status(404).json({ error: "Link not found or already deleted" });
   }
 };

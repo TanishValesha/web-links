@@ -21,8 +21,10 @@ const getTag_1 = require("../utils/getTag");
 const prisma = new client_1.PrismaClient();
 const saveLink = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { url, title, image, domain, tags, summary } = req.body;
-    if (!url || !title || !image || !domain || !tags || !summary)
+    if (!url || !title || !image || !domain || !tags || !summary) {
         res.status(400).json({ error: "All fields are required" });
+        return;
+    }
     if (!req.userId) {
         res.status(401).json({ error: "Unauthorized" });
         return;
@@ -31,23 +33,22 @@ const saveLink = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const isExisting = yield prisma.link.findFirst({
             where: { url: url },
         });
-        if (isExisting)
+        if (isExisting) {
             res.status(409).json({ message: "Link already saved/exists" });
-        if (!isExisting) {
-            const link = yield prisma.link.create({
-                data: {
-                    url,
-                    title,
-                    image,
-                    domain,
-                    tags,
-                    summary,
-                    userId: req.userId,
-                },
-            });
-            if (link)
-                res.status(201).json(link);
+            return;
         }
+        const link = yield prisma.link.create({
+            data: {
+                url,
+                title,
+                image,
+                domain,
+                tags,
+                summary,
+                userId: req.userId,
+            },
+        });
+        res.status(201).json(link);
     }
     catch (err) {
         console.error("Prisma createLink error:", err);
@@ -118,8 +119,10 @@ const getLinkById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 userId: req.userId,
             },
         });
-        if (!link)
+        if (!link) {
             res.status(404).json({ error: "Link not found" });
+            return;
+        }
         res.json(link);
     }
     catch (err) {
@@ -135,7 +138,8 @@ const deleteLink = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
         res.status(204).json({ message: "Link deleted successfully" });
     }
-    catch (_a) {
+    catch (error) {
+        console.error("Delete link error:", error);
         res.status(404).json({ error: "Link not found or already deleted" });
     }
 });
