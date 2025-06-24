@@ -45,7 +45,7 @@ const DashboardHeader = ({ onAddNewLink }: DashboardHeaderProps) => {
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
               <LinkIcon className="w-6 h-6 text-white" />
             </div>
-            <div>
+            <div className="hidden md:block">
               <h2 className="text-xl font-bold text-gray-900">LinkSaver</h2>
               <p className="text-sm text-gray-500">Organize your web links</p>
             </div>

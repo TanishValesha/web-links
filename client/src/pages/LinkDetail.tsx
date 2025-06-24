@@ -10,8 +10,10 @@ import {
   CalendarIcon,
   GlobeIcon,
   LoaderIcon,
+  LogOutIcon,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { toast } from "sonner";
 
 interface SavedLink {
   id: number;
@@ -29,6 +31,7 @@ const LinkDetail = () => {
   const navigate = useNavigate();
   const [link, setLink] = useState<SavedLink | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isHeaderLoading, setIsHeaderLoading] = React.useState(false);
 
   useEffect(() => {
     if (linkId) {
@@ -75,6 +78,31 @@ const LinkDetail = () => {
     }
   };
 
+  const handleLogout = async () => {
+    setIsHeaderLoading(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/logout`,
+        {
+          method: "GET",
+          credentials: "include",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.ok) {
+        toast.success("Logout successful!");
+        navigate("/");
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error("Logout failed.");
+    }
+    setIsHeaderLoading(false);
+  };
+
   if (!link && !isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center w-screen">
@@ -115,16 +143,35 @@ const LinkDetail = () => {
               className="text-gray-600 hover:text-gray-900"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
-              Back to Dashboard
+              <span className="hidden md:block">Back to Dashboard</span>
             </Button>
-
-            <Button
-              onClick={handleOpenLink}
-              className="bg-indigo-600 hover:bg-indigo-700"
-            >
-              <ExternalLinkIcon className="w-4 h-4 mr-2" />
-              Open Link
-            </Button>
+            <div className="flex justify-between items-center gap-2">
+              <Button
+                onClick={handleOpenLink}
+                className="bg-indigo-600 hover:bg-indigo-700"
+              >
+                <ExternalLinkIcon className="w-4 h-4 mr-2" />
+                Open Link
+              </Button>
+              <Button
+                variant="outline"
+                disabled={isHeaderLoading}
+                onClick={handleLogout}
+                className="border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg transition-colors"
+              >
+                {isHeaderLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-5 h-5 border-2 border-black/30 border-t-white rounded-full animate-spin"></div>
+                    <span>Logging out...</span>
+                  </div>
+                ) : (
+                  <>
+                    <LogOutIcon className="w-4 h-4 mr-2" />
+                    Logout
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -152,7 +199,7 @@ const LinkDetail = () => {
               {/* Content Section */}
               <div className="p-8">
                 <div className="mb-6">
-                  <h2 className="text-4xl font-bold text-gray-900 mb-4 leading-tight">
+                  <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 leading-tight">
                     {link?.title}
                   </h2>
 
@@ -185,9 +232,9 @@ const LinkDetail = () => {
                   {link?.tags.map((tag, index) => (
                     <Badge
                       key={index}
-                      className="text-sm bg-indigo-600 text-white"
+                      className="text-sm bg-indigo-600 mt-3 text-white"
                     >
-                      {tag}
+                      {tag.replace(/_/g, " ")}
                     </Badge>
                   ))}
                 </div>
@@ -200,7 +247,7 @@ const LinkDetail = () => {
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-gray-200">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col md:flex-row items-center justify-between">
                     <div className="text-sm text-gray-500">
                       <strong>URL:</strong>
                       <a
@@ -212,11 +259,10 @@ const LinkDetail = () => {
                         {link?.url}
                       </a>
                     </div>
-
                     <Button
                       onClick={handleOpenLink}
                       size="lg"
-                      className="bg-indigo-600 hover:bg-indigo-700"
+                      className="bg-indigo-600 hover:bg-indigo-700 md:mt-0 mt-2"
                     >
                       <ExternalLinkIcon className="w-4 h-4 mr-2" />
                       Visit Link

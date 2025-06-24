@@ -6,6 +6,7 @@ import { ExternalLinkIcon, TrashIcon, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "./ui/skeleton";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "../hooks/use-mobile";
 
 interface SavedLink {
   id: number;
@@ -22,7 +23,7 @@ const LinkGrid = ({ triggerReload }: { triggerReload: number }) => {
   const [savedLinks, setSavedLinks] = useState<SavedLink[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-
+  const isMobile = useIsMobile();
   useEffect(() => {
     loadSavedLinks();
   }, [triggerReload]);
@@ -124,16 +125,21 @@ const LinkGrid = ({ triggerReload }: { triggerReload: number }) => {
       {savedLinks.map((link) => (
         <Card
           key={link.id}
+          onClick={() => {
+            if (isMobile) {
+              openLink(link.id);
+            }
+          }}
           className="group hover:shadow-lg transition-all duration-300 border border-gray-200 bg-white"
         >
           <CardContent className="p-0">
             {/* Image Section */}
-            <div className="aspect-video bg-gray-100 rounded-t-lg overflow-hidden relative">
+            <div className="aspect-video bg-gray-100  rounded-t-lg overflow-hidden relative">
               {link.image ? (
                 <img
                   src={link.image}
                   alt={link.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover hover:scale-103 transition-all duration-300"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
@@ -192,7 +198,7 @@ const LinkGrid = ({ triggerReload }: { triggerReload: number }) => {
                     key={index}
                     className="text-xs mt-2 bg-indigo-600 text-white"
                   >
-                    {tag}
+                    {tag.replace(/_/g, " ")}
                   </Badge>
                 ))}
             </div>

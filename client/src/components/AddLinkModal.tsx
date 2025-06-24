@@ -24,6 +24,8 @@ interface LinkMetadata {
   image: string;
   domain: string;
   tags: string[];
+  summary: string;
+  userId: string;
 }
 
 const AddLinkModal = ({ isOpen, onClose, onLinkAdded }: AddLinkModalProps) => {
@@ -85,9 +87,17 @@ const AddLinkModal = ({ isOpen, onClose, onLinkAdded }: AddLinkModalProps) => {
           },
           body: JSON.stringify({
             url: url.trim(),
+            title: linkData?.title,
+            image: linkData?.image,
+            domain: linkData?.domain,
+            tags: linkData?.tags,
+            summary: linkData?.summary,
           }),
         }
       );
+      if (response.status === 409) {
+        toast.error("Link already saved/exists in the collection");
+      }
       if (!response.ok) {
         throw new Error("Failed to save link");
       } else if (response.ok) {

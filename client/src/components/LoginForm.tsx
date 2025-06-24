@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { EyeIcon, EyeOffIcon, LinkIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, LinkIcon, Lock, Mail } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -102,12 +102,13 @@ const LoginForm = ({
                   Email Address
                 </Label>
                 <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-30" />
                   <Input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-white/50 backdrop-blur-sm transition-all duration-300 hover:bg-white/70"
+                    className="h-12 pl-10 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-white/50 backdrop-blur-sm transition-all duration-300 hover:bg-white/70"
                     placeholder="Enter your email"
                     required
                   />
@@ -122,12 +123,13 @@ const LoginForm = ({
                   Password
                 </Label>
                 <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pr-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 bg-white/50 backdrop-blur-sm transition-all duration-300 hover:bg-white/70 focus:bg-white/90"
+                    className="pr-10 pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 bg-white/50 backdrop-blur-sm transition-all duration-300 hover:bg-white/70 focus:bg-white/90"
                     placeholder="Enter your password"
                     required
                   />

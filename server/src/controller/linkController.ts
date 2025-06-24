@@ -16,39 +16,34 @@ export const saveLink = async (
   req: AuthRequest,
   res: Response
 ): Promise<void> => {
-  const { url } = req.body;
-  if (!url) res.status(400).json({ error: "URL is required" });
+  const { url, title, image, domain, tags, summary } = req.body;
+  if (!url || !title || !image || !domain || !tags || !summary)
+    res.status(400).json({ error: "All fields are required" });
   if (!req.userId) {
     res.status(401).json({ error: "Unauthorized" });
     return;
   }
 
   try {
-    const { result } = await ogs({ url });
-    const title = result.ogTitle || "Untitled";
-    const image =
-      Array.isArray(result.ogImage) && result.ogImage.length > 0
-        ? result.ogImage[0].url
-        : null;
-    const domain = extractDomain(url);
-    const tags = await getTags(url);
-    const summary = await summarizeURL(url);
-
-    const link = await prisma.link.create({
-      data: {
-        url,
-        title,
-        image,
-        domain,
-        tags,
-        summary,
-        userId: req.userId!,
-      },
+    const isExisting = await prisma.link.findFirst({
+      where: { url: url },
     });
-    if (result.error == "403 Forbidden") {
-      res.status(403).json({ error: "Forbidden: Unable to access URL" });
+    if (isExisting)
+      res.status(409).json({ message: "Link already saved/exists" });
+    if (!isExisting) {
+      const link = await prisma.link.create({
+        data: {
+          url,
+          title,
+          image,
+          domain,
+          tags,
+          summary,
+          userId: req.userId!,
+        },
+      });
+      if (link) res.status(201).json(link);
     }
-    res.status(201).json(link);
   } catch (err: any) {
     console.error("Prisma createLink error:", err);
     res
@@ -58,12 +53,16 @@ export const saveLink = async (
 };
 
 export const prefetchLink = async (
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<void> => {
   const { url } = req.body;
   if (!url) {
     res.status(400).json({ error: "URL is required" });
+    return;
+  }
+  if (!req.userId) {
+    res.status(401).json({ error: "Unauthorized" });
     return;
   }
 
@@ -81,6 +80,7 @@ export const prefetchLink = async (
         : null;
     const domain = extractDomain(url);
     const tags = await getTags(url);
+    const summary = await summarizeURL(url);
 
     res.status(200).json({
       url,
@@ -88,6 +88,8 @@ export const prefetchLink = async (
       image,
       domain,
       tags,
+      summary,
+      userId: req.userId!,
     });
   } catch (error) {
     console.error("Open Graph Scraper error:", error);

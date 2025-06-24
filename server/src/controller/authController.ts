@@ -27,24 +27,26 @@ export const registerUser = async (
   const userExists = await prisma.user.findUnique({ where: { email } });
   if (userExists) res.status(400).json({ error: "User already exists" });
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  if (!userExists) {
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await prisma.user.create({
-    data: { email, password: hashedPassword },
-  });
+    const user = await prisma.user.create({
+      data: { email, password: hashedPassword },
+    });
 
-  const token = generateJWT(user.id);
+    const token = generateJWT(user.id);
 
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 24 * 60 * 60 * 1000,
-  });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
-  res.status(201).json({
-    message: "User registered successfully",
-  });
+    res.status(201).json({
+      message: "User registered successfully",
+    });
+  }
 };
 
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
