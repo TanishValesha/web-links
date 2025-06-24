@@ -11,7 +11,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const [auth, setAuth] = useState<boolean | null>(null); // null = loading
 
   useEffect(() => {
-    fetch("https://your-backend.onrender.com/api/auth/me", {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/me`, {
       method: "GET",
       credentials: "include", // Needed for cookies
     })
