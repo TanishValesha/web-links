@@ -12,6 +12,7 @@ import { Skeleton } from "../components/ui/skeleton";
 import { LinkIcon, PlusIcon, XIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "./ui/badge";
+import { useNavigate } from "react-router-dom";
 
 interface AddLinkModalProps {
   isOpen: boolean;
@@ -33,6 +34,7 @@ const AddLinkModal = ({ isOpen, onClose, onLinkAdded }: AddLinkModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [linkData, setLinkData] = useState<LinkMetadata | null>(null);
+  const navigate = useNavigate();
 
   if (!isOpen) return null;
 
@@ -56,6 +58,11 @@ const AddLinkModal = ({ isOpen, onClose, onLinkAdded }: AddLinkModalProps) => {
 
       if (!response.ok) {
         toast.error("Failed to fetch link metadata. Please check the URL.");
+      }
+
+      if (response.status === 500) {
+        toast.error("Failed to fetch link metadata. Please check the URL.");
+        navigate("/dashboard");
       }
 
       const data: LinkMetadata = await response.json();
