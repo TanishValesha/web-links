@@ -27,7 +27,6 @@ const checkStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             res
                 .status(500)
                 .json({ authenticated: false, error: "JWT secret not configured" });
-            return;
         }
         const user = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         res.json({ authenticated: true, user });

@@ -18,7 +18,6 @@ export const checkStatus = async (
       res
         .status(500)
         .json({ authenticated: false, error: "JWT secret not configured" });
-      return;
     }
     const user = jwt.verify(token, process.env.JWT_SECRET as string);
     res.json({ authenticated: true, user });

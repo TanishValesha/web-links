@@ -8,12 +8,12 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const [auth, setAuth] = useState<boolean | null>(null); // null = loading
+  const [auth, setAuth] = useState<boolean | null>(null);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/me`, {
       method: "GET",
-      credentials: "include", // Needed for cookies
+      credentials: "include",
     })
       .then((res) => {
         if (!res.ok) throw new Error("Not authenticated");
