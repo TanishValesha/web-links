@@ -11,6 +11,7 @@ import { Label } from "../components/ui/label";
 import { Skeleton } from "../components/ui/skeleton";
 import { LinkIcon, PlusIcon, XIcon } from "lucide-react";
 import { toast } from "sonner";
+import { Badge } from "./ui/badge";
 
 interface AddLinkModalProps {
   isOpen: boolean;
@@ -20,9 +21,9 @@ interface AddLinkModalProps {
 
 interface LinkMetadata {
   title: string;
-  description: string;
   image: string;
   domain: string;
+  tags: string[];
 }
 
 const AddLinkModal = ({ isOpen, onClose, onLinkAdded }: AddLinkModalProps) => {
@@ -37,49 +38,65 @@ const AddLinkModal = ({ isOpen, onClose, onLinkAdded }: AddLinkModalProps) => {
 
     setIsLoading(true);
     try {
-      // Simulate API call - in real app, this would fetch actual metadata
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      const domain = new URL(url).hostname.replace("www.", "");
-      const mockData: LinkMetadata = {
-        title: "Sample Article Title",
-        description:
-          "This is a sample description of the article or page content that would be fetched from the URL.",
-        image:
-          "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=200&fit=crop",
-        domain: domain,
-      };
-
-      setLinkData(mockData);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      toast(
-        "Failed to fetch link metadata. Please check the URL and try again."
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/link/fetch`,
+        {
+          method: "POST",
+          credentials: "include",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ url: url.trim() }),
+        }
       );
-    } finally {
-      setIsLoading(false);
+
+      if (!response.ok) {
+        toast.error("Failed to fetch link metadata. Please check the URL.");
+      }
+
+      const data: LinkMetadata = await response.json();
+      setLinkData(data);
+    } catch (error) {
+      console.error("Error fetching link metadata:", error);
+      toast.error("Failed to fetch link metadata. Please check the URL.");
     }
+    setIsLoading(false);
   };
 
-  const saveLink = () => {
-    if (!linkData || !url.trim()) return;
+  const saveLink = async () => {
+    if (!linkData) {
+      toast.error("No link data to save.");
+    }
+    if (!url.trim()) {
+      toast.error("Please enter a valid URL.");
+    }
 
-    const newLink = {
-      id: Date.now(),
-      url: url.trim(),
-      ...linkData,
-      savedAt: new Date().toISOString(),
-    };
-
-    const existingLinks = JSON.parse(
-      localStorage.getItem("savedLinks") || "[]"
-    );
-    const updatedLinks = [newLink, ...existingLinks];
-    localStorage.setItem("savedLinks", JSON.stringify(updatedLinks));
-
-    toast("Link saved to your collection!");
-
-    // Reset form
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/link`,
+        {
+          method: "POST",
+          credentials: "include",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            url: url.trim(),
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to save link");
+      } else if (response.ok) {
+        toast.success("Link saved successfully!");
+      }
+      toast.success("Link saved successfully!");
+    } catch (error) {
+      console.error("Error saving link:", error);
+      toast.error("Failed to save link. Please try again.");
+    }
     setUrl("");
     setLinkData(null);
     onLinkAdded();
@@ -144,8 +161,18 @@ const AddLinkModal = ({ isOpen, onClose, onLinkAdded }: AddLinkModalProps) => {
                 className="w-full h-32 object-cover rounded-md"
               />
               <h4 className="font-semibold text-gray-900">{linkData.title}</h4>
-              <p className="text-sm text-gray-600">{linkData.description}</p>
               <span className="text-xs text-gray-500">{linkData.domain}</span>
+              <div className="flex flex-wrap gap-2">
+                {linkData.tags.length > 0 &&
+                  linkData.tags.map((tag, index) => (
+                    <Badge
+                      key={index}
+                      className="text-xs bg-indigo-600 text-white"
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+              </div>
             </div>
           )}
 

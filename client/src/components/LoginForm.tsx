@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "./ui/card";
 import { EyeIcon, EyeOffIcon, LinkIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const LoginForm = ({
@@ -22,6 +22,7 @@ const LoginForm = ({
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,6 +56,7 @@ const LoginForm = ({
         toast.error("Invalid Credentials!");
       } else if (response.ok) {
         toast.success("Sign in successful!");
+        navigate("/dashboard");
       } else {
         toast.error("Sign in failed. Please try again.");
       }

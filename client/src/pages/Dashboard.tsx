@@ -5,6 +5,7 @@ import AddLinkModal from "../components/AddLinkModal";
 
 const Dashboard = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [triggerReload, setTriggerReload] = useState(0);
 
   const handleAddNewLink = () => {
     setIsAddModalOpen(true);
@@ -12,6 +13,7 @@ const Dashboard = () => {
 
   const handleLinkAdded = () => {
     setIsAddModalOpen(false);
+    setTriggerReload((prev) => prev + 1);
   };
 
   return (
@@ -19,7 +21,7 @@ const Dashboard = () => {
       <DashboardHeader onAddNewLink={handleAddNewLink} />
 
       <main className="container mx-auto px-6 py-8">
-        <LinkGrid />
+        <LinkGrid triggerReload={triggerReload} />
       </main>
 
       <AddLinkModal

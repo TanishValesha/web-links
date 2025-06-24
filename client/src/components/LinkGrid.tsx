@@ -17,13 +17,13 @@ interface SavedLink {
   createdAt: string;
 }
 
-const LinkGrid = () => {
+const LinkGrid = ({ triggerReload }: { triggerReload: number }) => {
   const [savedLinks, setSavedLinks] = useState<SavedLink[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadSavedLinks();
-  }, []);
+  }, [triggerReload]);
 
   const loadSavedLinks = async () => {
     setIsLoading(true);
@@ -170,7 +170,10 @@ const LinkGrid = () => {
             <div className="flex items-center space-x-2 mb-3 pl-4">
               {link.tags.length > 0 &&
                 link.tags.map((tag, index) => (
-                  <Badge key={index} className="text-xs">
+                  <Badge
+                    key={index}
+                    className="text-xs bg-indigo-600 text-white"
+                  >
                     {tag}
                   </Badge>
                 ))}

@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "./ui/card";
 import { EyeIcon, EyeOffIcon, LinkIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const SignUp = ({ setIsLogin }: { setIsLogin: (isLogin: boolean) => void }) => {
@@ -18,6 +18,7 @@ const SignUp = ({ setIsLogin }: { setIsLogin: (isLogin: boolean) => void }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,6 +51,7 @@ const SignUp = ({ setIsLogin }: { setIsLogin: (isLogin: boolean) => void }) => {
 
       if (response.ok) {
         toast.success("Sign up successful!");
+        navigate("/dashboard");
       } else {
         toast.error("Sign up failed. Please try again.");
       }
