@@ -12,11 +12,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logoutUser = exports.loginUser = exports.registerUser = void 0;
+exports.logoutUser = exports.loginUser = exports.registerUser = exports.checkStatus = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const client_1 = require("@prisma/client");
 const generateJWT_1 = require("../utils/generateJWT");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const prisma = new client_1.PrismaClient();
+const checkStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.cookies.token;
+    if (!token)
+        res.status(401).json({ authenticated: false });
+    try {
+        if (!process.env.JWT_SECRET) {
+            res
+                .status(500)
+                .json({ authenticated: false, error: "JWT secret not configured" });
+            return;
+        }
+        const user = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        res.json({ authenticated: true, user });
+    }
+    catch (err) {
+        res.status(401).json({ authenticated: false });
+    }
+});
+exports.checkStatus = checkStatus;
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     if (!email || !password)

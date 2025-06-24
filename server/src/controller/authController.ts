@@ -2,8 +2,30 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 import { generateJWT } from "../utils/generateJWT";
+import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
+
+export const checkStatus = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const token = req.cookies.token;
+  if (!token) res.status(401).json({ authenticated: false });
+
+  try {
+    if (!process.env.JWT_SECRET) {
+      res
+        .status(500)
+        .json({ authenticated: false, error: "JWT secret not configured" });
+      return;
+    }
+    const user = jwt.verify(token, process.env.JWT_SECRET as string);
+    res.json({ authenticated: true, user });
+  } catch (err) {
+    res.status(401).json({ authenticated: false });
+  }
+};
 
 export const registerUser = async (
   req: Request,

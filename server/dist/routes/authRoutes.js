@@ -9,4 +9,5 @@ const authController_1 = require("../controller/authController");
 router.post("/register", authController_1.registerUser);
 router.post("/login", authController_1.loginUser);
 router.get("/logout", authController_1.logoutUser);
+router.get("/me", authController_1.checkStatus);
 exports.default = router;

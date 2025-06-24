@@ -5,6 +5,7 @@ import Index from "./pages/index";
 import { Toaster } from "sonner";
 import Dashboard from "./pages/Dashboard";
 import LinkDetail from "./pages/LinkDetail";
+import ProtectedRoute from "./components/ProtectedRoute";
 // import Signup from "./pages/Signup";
 // import NotFound from "./pages/NotFound";
 
@@ -14,7 +15,14 @@ const App = () => (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Index />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/link/:linkId" element={<LinkDetail />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         {/* <Route path="*" element={<NotFound />} /> */}
