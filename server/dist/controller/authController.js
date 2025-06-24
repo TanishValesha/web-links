@@ -76,7 +76,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         maxAge: 24 * 60 * 60 * 1000,
     });
     res.status(200).json({
@@ -87,7 +87,7 @@ exports.loginUser = loginUser;
 const logoutUser = (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "none",
         secure: process.env.NODE_ENV === "production",
     });
     res.status(200).json({ message: "Logged out successfully" });
