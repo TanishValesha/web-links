@@ -73,7 +73,7 @@ const LoginForm = ({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto animate-fade-in">
+    <div className="w-full max-w-xl mx-auto animate-fade-in">
       <Card className="backdrop-blur-xl bg-white/70 border-0 shadow-2xl shadow-blue-500/10 relative overflow-hidden">
         {/* Animated border gradient */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-500 rounded-lg blur-sm opacity-75 animate-gradient-x"></div>

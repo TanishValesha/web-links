@@ -5,6 +5,7 @@ import { Badge } from "../components/ui/badge";
 import { ExternalLinkIcon, TrashIcon, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "./ui/skeleton";
+import { useNavigate } from "react-router-dom";
 
 interface SavedLink {
   id: number;
@@ -20,6 +21,7 @@ interface SavedLink {
 const LinkGrid = ({ triggerReload }: { triggerReload: number }) => {
   const [savedLinks, setSavedLinks] = useState<SavedLink[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadSavedLinks();
@@ -51,13 +53,29 @@ const LinkGrid = ({ triggerReload }: { triggerReload: number }) => {
   const deleteLink = (id: number) => {
     const updatedLinks = savedLinks.filter((link) => link.id !== id);
     setSavedLinks(updatedLinks);
-    localStorage.setItem("savedLinks", JSON.stringify(updatedLinks));
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/link/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to delete link");
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting link:", error);
+        toast("Failed to delete link");
+      });
 
-    toast("Link removed from your collection");
+    toast.success("Link removed from your collection");
   };
 
-  const openLink = (url: string) => {
-    window.open(url, "_blank", "noopener,noreferrer");
+  const openLink = (id: number) => {
+    navigate(`/link/${id}`);
   };
 
   if (savedLinks.length === 0 && !isLoading) {
@@ -128,7 +146,7 @@ const LinkGrid = ({ triggerReload }: { triggerReload: number }) => {
                 <Button
                   size="sm"
                   variant="secondary"
-                  onClick={() => openLink(link.url)}
+                  onClick={() => openLink(link.id)}
                   className="bg-white/90 hover:bg-white text-gray-700 shadow-sm"
                 >
                   <ExternalLinkIcon className="w-3 h-3" />
@@ -167,12 +185,12 @@ const LinkGrid = ({ triggerReload }: { triggerReload: number }) => {
                 </span>
               </div>
             </div>
-            <div className="flex items-center space-x-2 mb-3 pl-4">
+            <div className="flex flex-wrap items-center space-x-2 mb-3 pl-4">
               {link.tags.length > 0 &&
                 link.tags.map((tag, index) => (
                   <Badge
                     key={index}
-                    className="text-xs bg-indigo-600 text-white"
+                    className="text-xs mt-2 bg-indigo-600 text-white"
                   >
                     {tag}
                   </Badge>

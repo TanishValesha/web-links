@@ -5,7 +5,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 export const summarizeURL = async (url: string): Promise<string> => {
   try {
     const prompt = `Summarize the following webpage: ${url}
-    Construct and concise a brief summary that captures the main points and key information from the content. The summary should be informative and easy to understand, suitable for someone who has not read the page. Focus on the most relevant details and avoid unnecessary fluff.
+    Construct and concise a brief summary that captures the main points and key information from the content. The summary should be informative and easy to understand, suitable for someone who has not read the page. Focus on the most relevant details and avoid unnecessary fluff. return the summary with proper bolds, italics and formatting.
     `;
     const response = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",

@@ -29,6 +29,7 @@ interface LinkMetadata {
 const AddLinkModal = ({ isOpen, onClose, onLinkAdded }: AddLinkModalProps) => {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
   const [linkData, setLinkData] = useState<LinkMetadata | null>(null);
 
   if (!isOpen) return null;
@@ -71,7 +72,7 @@ const AddLinkModal = ({ isOpen, onClose, onLinkAdded }: AddLinkModalProps) => {
     if (!url.trim()) {
       toast.error("Please enter a valid URL.");
     }
-
+    setSaveLoading(true);
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/api/link`,
@@ -100,6 +101,7 @@ const AddLinkModal = ({ isOpen, onClose, onLinkAdded }: AddLinkModalProps) => {
     setUrl("");
     setLinkData(null);
     onLinkAdded();
+    setSaveLoading(false);
   };
 
   return (
@@ -182,10 +184,17 @@ const AddLinkModal = ({ isOpen, onClose, onLinkAdded }: AddLinkModalProps) => {
             </Button>
             <Button
               onClick={saveLink}
-              disabled={!linkData}
+              disabled={!linkData || saveLoading}
               className="bg-indigo-600 hover:bg-indigo-700"
             >
-              Save Link
+              {saveLoading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>Saving...</span>
+                </div>
+              ) : (
+                "Save Link"
+              )}
             </Button>
           </div>
         </CardContent>
