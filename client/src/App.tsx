@@ -23,7 +23,15 @@ const App = () => (
             </ProtectedRoute>
           }
         />
-        <Route path="/link/:linkId" element={<LinkDetail />} />
+
+        <Route
+          path="/link/:linkId"
+          element={
+            <ProtectedRoute>
+              <LinkDetail />
+            </ProtectedRoute>
+          }
+        />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
