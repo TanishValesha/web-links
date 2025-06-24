@@ -1,9 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-
-interface AuthRequest extends Request {
-  userId?: string;
-}
+import { AuthRequest } from "../types/types";
 
 export const protect = (
   req: AuthRequest,

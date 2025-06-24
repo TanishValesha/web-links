@@ -5,12 +5,9 @@ import ogs from "open-graph-scraper";
 import { extractDomain } from "../utils/extractDomain";
 import { summarizeURL } from "../utils/summarizeURL";
 import { getTags } from "../utils/getTag";
+import { AuthRequest } from "../types/types";
 
 const prisma = new PrismaClient();
-
-interface AuthRequest extends Request {
-  userId?: string;
-}
 
 export const saveLink = async (
   req: AuthRequest,
