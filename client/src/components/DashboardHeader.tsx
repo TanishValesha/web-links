@@ -41,18 +41,20 @@ const DashboardHeader = ({ onAddNewLink }: DashboardHeaderProps) => {
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* App Name & Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-              <LinkIcon className="w-6 h-6 text-white" />
-            </div>
-            <div className="hidden md:block">
-              <h2 className="text-xl font-bold text-gray-900">LinkSaver</h2>
-              <p className="text-sm text-gray-500">Organize your web links</p>
+          <div className="hidden sm:block">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                <LinkIcon className="w-6 h-6 text-white" />
+              </div>
+              <div className="hidden md:block">
+                <h2 className="text-xl font-bold text-gray-900">LinkSaver</h2>
+                <p className="text-sm text-gray-500">Organize your web links</p>
+              </div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center justify-center space-x-4">
             <Button
               onClick={onAddNewLink}
               className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg shadow-sm transition-colors"

@@ -137,14 +137,16 @@ const LinkDetail = () => {
       <div className="bg-white border-b border-gray-200">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <Button
-              onClick={handleBack}
-              variant="ghost"
-              className="text-gray-600 hover:text-gray-900"
-            >
-              <ArrowLeftIcon className="w-4 h-4 mr-2" />
-              <span className="hidden md:block">Back to Dashboard</span>
-            </Button>
+            <div className="sm:block hidden">
+              <Button
+                onClick={handleBack}
+                variant="ghost"
+                className="text-gray-600 hover:text-gray-900"
+              >
+                <ArrowLeftIcon className="w-4 h-4 mr-2" />
+                <span className="hidden md:block">Back to Dashboard</span>
+              </Button>
+            </div>
             <div className="flex justify-between items-center gap-2">
               <Button
                 onClick={handleOpenLink}
@@ -232,7 +234,7 @@ const LinkDetail = () => {
                   {link?.tags.map((tag, index) => (
                     <Badge
                       key={index}
-                      className="text-sm bg-indigo-600 mt-3 text-white"
+                      className="text-sm bg-indigo-600 mt-2 sm:mt-3 text-white"
                     >
                       {tag.replace(/_/g, " ")}
                     </Badge>

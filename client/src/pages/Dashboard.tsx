@@ -17,10 +17,10 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="w-screen min-h-screen bg-gray-50">
+    <div className="w-screen min-h-screen bg-gray-50 overflow-x-hidden">
       <DashboardHeader onAddNewLink={handleAddNewLink} />
 
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-6 py-8 overflow-x-hidden">
         <LinkGrid triggerReload={triggerReload} />
       </main>
 

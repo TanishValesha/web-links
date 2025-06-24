@@ -104,15 +104,15 @@ const LinkGrid = ({ triggerReload }: { triggerReload: number }) => {
         {Array.from({ length: 3 }).map((_, index) => (
           <div
             key={index}
-            className="flex flex-col space-y-3 text-center justify-center items-baseline py-16"
+            className="flex flex-col space-y-3 text-center justify-center items-center py-8 md:py-16"
           >
-            <div className="relative flex justify-center">
-              <Skeleton className="h-[200px] w-[400px] rounded-xl" />
-              <ImageIcon className="w-12 h-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-300" />
+            <div className="relative flex justify-center w-full">
+              <Skeleton className="h-[150px] w-full max-w-[400px] sm:h-[180px] md:h-[200px] rounded-xl" />
+              <ImageIcon className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-300" />
             </div>
-            <div className="space-y-2 flex-col">
-              <Skeleton className="h-4 w-[250px]" />
-              <Skeleton className="h-4 w-[200px]" />
+            <div className="space-y-2 flex flex-col items-center w-full px-4">
+              <Skeleton className="h-4 w-full max-w-[250px]" />
+              <Skeleton className="h-4 w-full max-w-[200px]" />
             </div>
           </div>
         ))}
